@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
 import Home from '../views/Home.vue'
+import Cidade from '../views/CidadePage.vue'
+import Campanha from '../views/CampanhaPage.vue'
+import Desconto from '../views/DescontoPage.vue'
 
 Vue.use(VueRouter)
 
@@ -9,6 +13,21 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+      path: '/cidade',
+      name: 'cidade',
+      component: Cidade
+  },
+  {
+      path: '/campanha',
+      name: 'campanha',
+      component: Campanha
+  },
+  {
+      path: '/desconto',
+      name: 'desconto',
+      component: Desconto
   },
   {
     path: '/about',
