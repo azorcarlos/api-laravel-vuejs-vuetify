@@ -89,7 +89,8 @@
             editedIndex: -1,
             editedItem: {
                 name: '',
-                state: ''
+                state: '',
+                id:''
             },
             defaultItem: {
                 name: '',
@@ -120,6 +121,7 @@
             },
 
             editItem (item) {
+
                 this.editedIndex = this.desserts.indexOf(item)
                 this.editedItem = Object.assign({}, item)
                 this.dialog = true
@@ -127,9 +129,15 @@
 
             deleteItem (item) {
                 const index = this.desserts.indexOf(item)
-                confirm('Deseja realmente excluir este item?') && this.desserts.splice(index, 1)
-            },
+                const baseURI = 'http://localhost:8000/api/cidade/'+item.id
+                if(confirm('Deseja realmente excluir este item?') && this.desserts.splice(index, 1)){
+                    this.$http.delete(baseURI, {headers: {
+                            'Content-Type': 'application/json',
+                            'Accept':'application/json'
+                    }});
+                }
 
+            },
             close () {
                 this.dialog = false
                 setTimeout(() => {
@@ -139,20 +147,52 @@
             },
 
             save () {
+                const baseURI = 'http://localhost:8000/api/cidade/'
                 if (this.editedIndex > -1) {
-                    alert('salvar');
-                    const baseURI = 'http://localhost:8000/api/cidade'
-                    this.$http.get(baseURI)
-                        .then((result) => {
-                            this.desserts = result.data
-                        })
+
+                    //Atualizar
+                    this.$http.put(baseURI+this.editedItem.id, {
+                        name:this.editedItem.name,state:this.editedItem.state,
+                        _method: 'PUT'
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept':'application/json'
+                        }
+                    },
+                    ).then(function (response) {
+                        this.getCidades();
+                        console.log(response);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
 
                     Object.assign(this.desserts[this.editedIndex], this.editedItem)
                 } else {
-                     this.desserts.push(this.editedItem)
+
+                    this.$http.post(baseURI+this.editedItem.id, {
+                            name:this.editedItem.name,state:this.editedItem.state,
+                        },
+                        {headers: {
+                                'Content-Type': 'application/json',
+                                'Accept':'application/json'
+                            }
+                        },
+                          )
+                        .then(function (response) {
+                           this.getCidades();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                      this.getCidades();
+                     //this.desserts.push(this.editedItem)
                 }
+                this.getCidades()
                 this.close()
             },
+
             getCidades: function () {
                 const baseURI = 'http://localhost:8000/api/cidade'
                 this.$http.get(baseURI)
