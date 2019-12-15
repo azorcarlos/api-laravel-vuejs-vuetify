@@ -9,7 +9,7 @@
             <template v-slot:top>
                 <!-- Titulo tabela  -->
                 <v-toolbar flat color="white">
-                    <v-toolbar-title>Cidades</v-toolbar-title>
+                    <v-toolbar-title>Desconto</v-toolbar-title>
                     <v-divider
                             class="mx-4"
                             inset

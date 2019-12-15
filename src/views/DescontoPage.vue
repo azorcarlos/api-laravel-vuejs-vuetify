@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import DescontoComponent from '../components/Campanha'
+    import DescontoComponent from '../components/Desconto'
     export default {
         name: "DescontoPage",
         components:{DescontoComponent}

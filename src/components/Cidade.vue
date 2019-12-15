@@ -115,28 +115,43 @@
         },
 
         methods: {
+            getCidades: function () {
+                const baseURIGrid = 'http://localhost:8000/api/cidade'
+                this.$http.get(baseURIGrid)
+                    .then((result) => {
+                        this.desserts = result.data
+                    })
+            },
             initialize () {
                 this.getCidades();
 
             },
-
             editItem (item) {
 
                 this.editedIndex = this.desserts.indexOf(item)
                 this.editedItem = Object.assign({}, item)
                 this.dialog = true
             },
-
             deleteItem (item) {
-                const index = this.desserts.indexOf(item)
-                const baseURI = 'http://localhost:8000/api/cidade/'+item.id
-                if(confirm('Deseja realmente excluir este item?') && this.desserts.splice(index, 1)){
-                    this.$http.delete(baseURI, {headers: {
-                            'Content-Type': 'application/json',
-                            'Accept':'application/json'
-                    }});
-                }
 
+                const index = this.desserts.indexOf(item)
+                 if(confirm('Deseja realmente excluir este registro?')){
+
+                    this.$http.delete('http://localhost:8000/api/cidade/'+item.id,
+                        {
+                            "headers":{'Content-Type': 'application/json'}
+                        }).then((response) => {
+                        if(response.data.status == true){
+                            this.message('Registro Excluido com Sucesso!')
+                            this.getCidades()
+                        }else{
+                            console.log(response.data);
+                        }
+                    }).catch(e =>{
+                        console.log(e);
+                        this.message('Ops :( \nOcorreu um erro ao tentar excluir este registro!\n Tente novamente mais tarde.')
+                     });
+                 }
             },
             close () {
                 this.dialog = false
@@ -145,61 +160,57 @@
                     this.editedIndex = -1
                 }, 300)
             },
-
             save () {
                 const baseURI = 'http://localhost:8000/api/cidade/'
                 if (this.editedIndex > -1) {
-
-                    //Atualizar
                     this.$http.put(baseURI+this.editedItem.id, {
                         name:this.editedItem.name,state:this.editedItem.state,
                         _method: 'PUT'
                     },
                     {
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Accept':'application/json'
+                            'Content-Type': 'application/json'
                         }
-                    },
-                    ).then(function (response) {
-                        this.getCidades();
-                        console.log(response);
-                    }).catch(function (error) {
-                        console.log(error);
+                    }).then((response) => {
+                        if(response){
+                            alert('Cadastro autalizado com sucesso!')
+                        }
+                        this.getCidades()
+                    }).catch((e) => {
+
+                        console.log(e);
+                        this.getCidades()
                     });
 
-                    Object.assign(this.desserts[this.editedIndex], this.editedItem)
-                } else {
 
-                    this.$http.post(baseURI+this.editedItem.id, {
+                } else {
+                    this.$http.post(baseURI, {
                             name:this.editedItem.name,state:this.editedItem.state,
                         },
                         {headers: {
-                                'Content-Type': 'application/json',
-                                'Accept':'application/json'
+                                'Content-Type': 'application/json'
                             }
                         },
                           )
-                        .then(function (response) {
-                           this.getCidades();
+                        .then((response) => {
+                            if(response.id){
+                                this.message('Cidade cadastrada com Sucesso!')
+                            }
+                            this.getCidades()
                         })
-                        .catch(function (error) {
-                            console.log(error);
+                        .catch((e) =>{
+                            console.log('erro');
+                            this.message('Ops :( \nOcorreu um erro ao tentar cadastar este registro!\n Tente novamente mais tarde.')
+                            this.getCidades();
                         });
-                      this.getCidades();
-                     //this.desserts.push(this.editedItem)
-                }
-                this.getCidades()
+
+                    }
                 this.close()
             },
-
-            getCidades: function () {
-                const baseURI = 'http://localhost:8000/api/cidade'
-                this.$http.get(baseURI)
-                    .then((result) => {
-                        this.desserts = result.data
-                    })
+            message(text){
+                alert(text)
             }
+
         },
     }
 </script>

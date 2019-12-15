@@ -4,7 +4,9 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Cidade from '../views/CidadePage.vue'
 import Campanha from '../views/CampanhaPage.vue'
-import Desconto from '../views/DescontoPage.vue'
+import GrupCidade from '../views/GrupoCidadePage'
+import Desconto from '../views/DescontoPage'
+
 
 Vue.use(VueRouter)
 
@@ -14,20 +16,26 @@ const routes = [
     name: 'home',
     component: Home
   },
-  {
-      path: '/cidade',
-      name: 'cidade',
-      component: Cidade
-  },
-  {
+    {
+        path: '/cidade',
+        name: 'cidade',
+        component: Cidade
+    },
+    {
+        path: '/grpcidade',
+        name: 'grupo_cidade',
+        component: GrupCidade
+    },
+    {
+        path: '/desconto',
+        name: 'desconto',
+        component: Desconto
+    },
+
+    {
       path: '/campanha',
       name: 'campanha',
       component: Campanha
-  },
-  {
-      path: '/desconto',
-      name: 'desconto',
-      component: Desconto
   },
   {
     path: '/about',

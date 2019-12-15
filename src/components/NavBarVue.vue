@@ -19,8 +19,10 @@
         <v-spacer></v-spacer>
         <v-toolbar-items>
             <v-btn text to="/cidade">Cidade</v-btn>
-            <v-btn text to="campanha">Campanhas</v-btn>
-            <v-btn text to="desconto">Desconto</v-btn>
+            <v-btn text to="/grpcidade">Grupo Cidade</v-btn>
+            <v-btn text to="/campanha">Campanhas</v-btn>
+            <v-btn text to="/desconto">Desconto</v-btn>
+
         </v-toolbar-items>
         <v-btn
                 to="/"
