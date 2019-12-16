@@ -2,6 +2,7 @@
     <v-card height="150">
         <v-footer
                 color="info"
+                dark
                 absolute
                 class="font-weight-medium"
         >

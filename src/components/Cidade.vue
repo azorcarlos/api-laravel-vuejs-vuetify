@@ -3,7 +3,6 @@
         <v-data-table
                 :headers="headers"
                 :items="desserts"
-                sort-by="calories"
                 class="elevation-1"
         >
             <template v-slot:top>
@@ -52,11 +51,12 @@
                 <v-icon
                         small
                         class="mr-2"
+                        color="success"
                         @click="editItem(item)"
                 >
                     edit
                 </v-icon>
-                <v-icon
+                <v-icon color="primary"
                         small
                         @click="deleteItem(item)"
                 >
@@ -76,10 +76,11 @@
         data: () => ({
             dialog: false,
             headers: [
+                { text: '#', value: 'id',sortable:true },
                 {
                     text: 'Cidade',
                     align: 'left',
-                    sortable: false,
+                    sortable: true,
                     value: 'name',
                 },
                 { text: 'Estado', value: 'state' },

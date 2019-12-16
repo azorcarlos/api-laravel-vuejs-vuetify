@@ -64,12 +64,14 @@
                 <v-icon
                         small
                         class="mr-2"
+                        color="success"
                         @click="editItem(item)"
                 >
                     edit
                 </v-icon>
                 <v-icon
                         small
+                        color="primary"
                         @click="deleteItem(item)"
                 >
                     delete

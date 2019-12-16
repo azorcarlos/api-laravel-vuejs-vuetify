@@ -34,11 +34,18 @@
                                         </v-col>
                                         <v-col cols="12" sm="12" md="12">
                                           <label>Data Inicio</label></br>
-                                          <input type="date" name="starts_at" v-model="starts_at"/>
+                                          <input type="date" name="starts_at" v-model="editedItem.starts_at"/>
                                         </v-col>
                                         <v-col  cols="12" sm="12" md="12">
                                             <label>Data Fim</label></br>
-                                            <input type="date" name="ends_at" v-model="ends_at"/>
+                                            <input type="date" name="ends_at" v-model="editedItem.ends_at" />
+                                        </v-col>
+                                        <v-col  cols="12" sm="12" md="12">
+                                            <v-select
+                                                    v-model="editedItem.desconto"
+                                                    :items="listDesconto"
+                                                    label="Vincular desconto"
+                                            ></v-select>
                                         </v-col>
                                         <v-col cols="12" sm="12" md="12">
                                             <v-select
@@ -72,11 +79,13 @@
                 <v-icon
                         small
                         class="mr-2"
+                        color="success"
                         @click="editItem(item)"
                 >
                     edit
                 </v-icon>
                 <v-icon
+                        color="primary"
                         small
                         @click="deleteItem(item)"
                 >
@@ -96,6 +105,7 @@
         data: () => ({
             dialog: false,
             cidades :[],
+            desconto:'',
             headers: [
                 { text: '#', value: 'id', sortable: true },
                 {
@@ -111,16 +121,23 @@
                 { text: 'Actions', value: 'action', sortable: false },
             ],
             desserts: [],
+            listDesconto: [''],
             starts_at:'',
             ends_at:'',
             editedIndex: -1,
             editedItem: {
                 name: '',
-                id:''
+                id:'',
+                starts_at:'',
+                ends_at:'',
+                desconto:''
             },
             defaultItem: {
                 name: '',
-                id: ''
+                id: '',
+                starts_at:'',
+                ends_at:'',
+                desconto:'',
             },
             e6: [],
             e7: [],
@@ -142,6 +159,7 @@
 
         created () {
             this.initialize()
+            this.getCarregarDesconto()
         },
 
         methods: {
@@ -157,9 +175,10 @@
 
             },
             editItem (item) {
+                console.log(item)
                 this.editedIndex = this.desserts.indexOf(item)
                 this.editedItem = Object.assign({}, item)
-                this.getCarregarCidade(item.id)
+                this.getCarregarCampanha(item.id)
                 this.dialog = true
             },
             deleteItem (item) {
@@ -193,7 +212,11 @@
                 const baseURI = 'http://localhost:8000/api/campanha/'
                 if (this.editedIndex > -1) {
                     this.$http.put(baseURI+this.editedItem.id, {
-                            name:this.editedItem.name,grupo:this.e6,starts_at:this.starts_at,ends_at:this.ends_at,
+                            name:this.editedItem.name,
+                            grupo:this.e6,
+                            starts_at:this.editedItem.starts_at,
+                            ends_at:this.editedItem.ends_at,
+                            id_desconto:this.editedItem.desconto,
                             _method: 'PUT'
                         },
                         {
@@ -215,7 +238,10 @@
 
                 } else {
                     this.$http.post(baseURI, {
-                            name:this.editedItem.name,grupo:this.e6,starts_at:this.starts_at,ends_at:this.ends_at
+                            name:this.editedItem.name,grupo:this.e6,
+                            starts_at:this.editedItem.starts_at,
+                            ends_at:this.editedItem.ends_at,
+                            id_desconto:this.editedItem.desconto
                         },
                         {headers: {
                                 'Content-Type': 'application/json'
@@ -246,15 +272,18 @@
             message(text){
                 alert(text)
             },
-            getCarregarCidade(campanha){
+            getCarregarCampanha(campanha){
                 const baseURIGrid = 'http://localhost:8000/api/campanha/'+campanha
                 if(this.getCarregarCampanhaAll()){
                     this.$http.get(baseURIGrid)
                         .then((result) => {
+                            console.log(result);
                             let valuesCidades=[]
                             result.data.forEach(function(value,index){
-                                valuesCidades.push(value.id);
+                                valuesCidades.push(value.grupo_id);
                             })
+
+                            console.log(valuesCidades);
                             this.e6 = valuesCidades
                         })
 
@@ -277,7 +306,20 @@
             newGrupo(value){
                 this.getCarregarCampanhaAll()
                 this.e6 = []
-            }
+            },
+            getCarregarDesconto(){
+                const baseURIGrid = 'http://localhost:8000/api/desconto/'
+                let desconto=[]
+                this.$http.get(baseURIGrid)
+                    .then((result) => {
+                        result.data.forEach(function(value,index){
+                            desconto.push({'text':value.name,'value':value.id});
+
+                        })
+                        this.listDesconto = desconto
+                    })
+                return true;
+            },
 
         },
     }
